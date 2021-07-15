@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+
+  comment_db:
+    container_name: comment_db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: comment
+      POSTGRES_PASSWORD: comment
+      POSTGRES_DB: comment_db
+    ports:
+      - "3001:5432"
+    volumes:
+    - ./backups:/home/backups/
+
+  post_db:
+    container_name: post_db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: post
+      POSTGRES_PASSWORD: post
+      POSTGRES_DB: post_db
+    ports:
+      - "3002:5432"
+    volumes:
+      - ./backups:/home/backups/
+
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 4001:27017
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5001:5672
+        - 5002:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq

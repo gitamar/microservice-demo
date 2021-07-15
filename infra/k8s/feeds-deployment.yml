@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feeds-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feeds
+  template:
+    metadata:
+      labels:
+        app: feeds
+
+    spec:
+      containers:
+        - name: feeds
+          image: amarnaththillai/feeds:latest
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: feeds-service
+spec:
+  selector:
+    app: feeds
+  ports:
+  - name: feeds-service
+    protocol: TCP
+    port: 6003
+    targetPort: 6003
