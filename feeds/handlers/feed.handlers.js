@@ -1,21 +1,21 @@
 const environment = process.env.NODE_ENV || 'development';
-const { Feed  } = require('../models/feed.model')
+const configuration = require('../knexfile')[environment];
+const database = require('knex')(configuration);
+const { attachPaginate } = require('knex-paginate');
+attachPaginate();
 const { publishToQueue } = require('../utils/rabbitMQ');
 
 const getFeed = async (req, res) => {
     try {
-        let { page, limit  } = req.qurey
-        console.log(`Get post by # ${id} `);
+        let { page, limit } = req.query;
+        console.log(`Get all feeds by page: ${page} and limit: ${limit}`);
 
-        const options = {
-            page,
-            limit,
-            collation: {
-              locale: 'en',
-            },
-          };
+        let data = await database('feed_master').paginate({
+            perPage: limit,
+            currentPage: page,
+        });
 
-        let data = await Feed.paginate({},options)
+        console.log(data);
 
         if (data.length === 0) {
             return res.status(404).json({
@@ -39,7 +39,6 @@ const getFeed = async (req, res) => {
         });
     }
 };
-
 
 module.exports = {
     getFeed,

@@ -44,7 +44,7 @@ const createPost = async (req, res) => {
         let data = await database('post_master').insert({ post_text: post }).returning('*');
 
         if (data) {
-            publishToQueue('create-post', JSON.stringify({ post_text: post }));
+            publishToQueue('create-post', JSON.stringify({ data }));
         }
 
         return res.status(200).json({

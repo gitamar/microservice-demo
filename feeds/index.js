@@ -2,13 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const server = express();
 const { getFeed } = require('./handlers/feed.handlers');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://host.minikube.internal:4001/feed', {useNewUrlParser: true, useUnifiedTopology: true});
 const PORT = 6003;
-
-mongoose.connection.on('open', () => {
-    console.log('Connected to MongoDB.');
-})
 
 server.use(express.json());
 server.use(morgan('common'));

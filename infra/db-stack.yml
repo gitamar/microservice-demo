@@ -28,13 +28,18 @@ services:
     volumes:
       - ./backups:/home/backups/
 
-  mongodb_container:
-    image: mongo:latest
+  feed_db:
+    container_name: feed_db
+    image: postgres
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      POSTGRES_USER: feed
+      POSTGRES_PASSWORD: feed
+      POSTGRES_DB: feed_db
     ports:
-      - 4001:27017
+      - "3003:5432"
+    volumes:
+      - ./backups:/home/backups/
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

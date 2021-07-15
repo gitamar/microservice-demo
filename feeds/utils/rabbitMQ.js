@@ -1,5 +1,7 @@
 const MQ = require('amqplib');
 const CONNECTION_URL = `amqp://host.minikube.internal:5001`;
+const { onHandlePostCreated } = require('../consumers/post.consumer')
+const { onHandleCommentCreated } = require('../consumers/comment.consumer')
 
 let ch = null;
 
@@ -14,7 +16,9 @@ let ch = null;
 
     await ch.assertQueue('create-post');
     await ch.consume('create-post', (msg) => {  
-        console.log(`EVENT-RECIVED : Post Created ${msg.content.toString()}`);
+        let data = msg.content.toString()
+        console.log(`EVENT-RECIVED : Post Created ${data}`);
+        onHandlePostCreated(JSON.parse(data))
         ch.ack(msg);
     });
 
@@ -32,7 +36,9 @@ let ch = null;
 
     await ch.assertQueue('create-comment');
     await ch.consume('create-comment', (msg) => {
-        console.log(`Comment Created ${msg.content.toString()}`);
+        let data = msg.content.toString()
+        console.log(`EVENT-RECIVED : Comment Created ${data}`);
+        onHandleCommentCreated(JSON.parse(data))
         ch.ack(msg);
     });
 
